@@ -121,11 +121,12 @@ public class RecipeUI {
             String[] splitStr = inputStr.split("&");
 
             for (String str : splitStr) {
-                if (str.contains("name") && str.length() == 2) {
-                    name = str.split("=")[1];
+                String[] keyValue = str.split("=");
+                if (keyValue[0].contains("name") && keyValue.length == 2) {
+                    name = keyValue[1];
                 }
-                if (str.contains("ingredient") && str.length() == 2) {
-                    ingredients = (str.split("=")[1]);
+                if (keyValue[0].contains("ingredient") && keyValue.length == 2) {
+                    ingredients = keyValue[1];
                 }
             }
 
