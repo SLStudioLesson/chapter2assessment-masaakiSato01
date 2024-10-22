@@ -1,5 +1,9 @@
 package data;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -22,12 +26,18 @@ public class RecipeFileHandler {
      * @return レシピデータ
      */
     public ArrayList<String> readRecipes() {
-        // try {
-
-        // } catch (IOException e) {
-        //     System.out.println("Error reading file:" + e.getMessage());
-        // }
-        return null;
+        ArrayList<String> arrayList = new ArrayList<>();
+        String line = "";
+        //読み込めなくなるまで実行
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath));){
+            while ((line = reader.readLine()) != null) {
+                arrayList.add(line);
+            }
+        } catch (IOException e) {
+            System.out.println("Error reading file:" + e.getMessage());
+        }
+        //リストを返す
+        return arrayList;
     }
 
     /**
@@ -40,10 +50,28 @@ public class RecipeFileHandler {
      */
      // 
     public void addRecipe(String recipeName, String ingredients) {
-        // try {
-
-        // } catch (IOException e) {
-
-        // }
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath,true))){
+            //レシピ名と材料を書き込む
+            writer.write(recipeName+", "+ingredients);
+            writer.newLine();
+        } catch (IOException e) {
+            System.out.println("Error reading file: "+e.getMessage());
+        }
     }
+
+    /**
+     * 設問3 検索機能
+     * 
+     * @param name
+     * @param ingredients
+     */
+
+    public void searchRecipes(String name,String ingredients){
+        for(String array:readRecipes()){
+            if (array.contains(name) && array.contains(ingredients)) {
+                System.out.println(array);
+            }
+        }
+    }
+
 }

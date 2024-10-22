@@ -1,9 +1,8 @@
 package ui;
 
 import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.io.InputStreamReader;
 
 import data.RecipeFileHandler;
 
@@ -37,12 +36,15 @@ public class RecipeUI {
                 switch (choice) {
                     case "1":
                         // 設問1: 一覧表示機能
+                        displayRecipes();
                         break;
                     case "2":
                         // 設問2: 新規登録機能
+                        addNewRecipe();
                         break;
                     case "3":
                         // 設問3: 検索機能
+                        searchRecipe();
                         break;
                     case "4":
                         System.out.println("Exit the application.");
@@ -62,7 +64,24 @@ public class RecipeUI {
      * RecipeFileHandlerから読み込んだレシピデータを整形してコンソールに表示します。
      */
     private void displayRecipes() {
-
+        RecipeFileHandler rfh = new RecipeFileHandler();
+        //レシピが空っぽなら終了
+        if (rfh.readRecipes() == null) {
+            System.out.println("No recipes available");
+            return;
+        }
+        //
+        System.out.println("Recipes:");
+        for (String array : rfh.readRecipes()) {
+            String[] currentStr = array.split(",");
+            System.out.println("Recipe Name: " + currentStr[0]);
+            System.out.print("Main Ingredients");
+            for (int i = 1; i < currentStr.length; i++) {
+                System.out.print(currentStr[i] + ", ");
+            }
+            System.out.println();
+            System.out.println("-----------------------------------");
+        }
     }
 
     /**
@@ -72,18 +91,49 @@ public class RecipeUI {
      * @throws java.io.IOException 入出力が受け付けられない
      */
     private void addNewRecipe() throws IOException {
+        RecipeFileHandler rfh = new RecipeFileHandler();
+        try {
+            System.out.print("Enter recipe name: ");
+            String recipeName = reader.readLine();
+            System.out.print("Enter main ingredients (comma separated): ");
+            String ingredients = reader.readLine();
 
+            rfh.addRecipe(recipeName, ingredients);
+            System.out.println("Recipe added successfully");
+        } catch (IOException e) {
+            throw e;
+        }
     }
 
     /**
      * 設問3: 検索機能
-     * ユーザーから検索クエリを入力させ、そのクエリに基づいてレシピを検索し、一致するレシピをコンソールに表示します。
      *
-     * @throws java.io.IOException 入出力が受け付けられない
+     * @throws java.io.IOException 一致するレシピがない
      */
-    private void searchRecipe() throws IOException {
 
+    private void searchRecipe() throws IOException {
+        RecipeFileHandler rfh = new RecipeFileHandler();
+        try {
+            System.out.print("Enter search query (e.g., 'name=Tomato&ingredient=Garlic'): ");
+            String inputStr = reader.readLine();
+            String name = "";
+            String ingredients = "";
+            String[] splitStr = inputStr.split("&");
+
+            for (String str : splitStr) {
+                if (str.contains("name") && str.length() == 2) {
+                    name = str.split("=")[1];
+                }
+                if (str.contains("ingredient") && str.length() == 2) {
+                    ingredients = (str.split("=")[1]);
+                }
+            }
+
+            rfh.searchRecipes(name,ingredients);
+
+        } catch (IOException e) {
+            throw e;
+        }
     }
 
 }
-
