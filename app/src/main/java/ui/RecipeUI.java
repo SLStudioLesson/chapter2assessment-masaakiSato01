@@ -3,6 +3,7 @@ package ui;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 import data.RecipeFileHandler;
 
@@ -65,23 +66,26 @@ public class RecipeUI {
      */
     private void displayRecipes() {
         RecipeFileHandler rfh = new RecipeFileHandler();
-        //レシピが空っぽなら終了
-        if (rfh.readRecipes() == null) {
+        ArrayList<String> array = new ArrayList<>(rfh.readRecipes());
+        //レシピが空なら実行しない
+        if (array.isEmpty()) {
             System.out.println("No recipes available");
             return;
         }
-        //
-        System.out.println("Recipes:");
-        for (String array : rfh.readRecipes()) {
-            String[] currentStr = array.split(",");
-            System.out.println("Recipe Name: " + currentStr[0]);
-            System.out.print("Main Ingredients");
-            for (int i = 1; i < currentStr.length; i++) {
-                System.out.print(currentStr[i] + ", ");
+        // レシピの出力
+            for (String str : array) {
+                System.out.println("Recipes:");
+                String[] currentStr = str.split(",");
+                System.out.println("Recipe Name: " + currentStr[0]);
+                System.out.print("Main Ingredients");
+                for (int i = 1; i < currentStr.length; i++) {
+                    if (i > 1)
+                        System.out.print(", ");
+                    System.out.print(currentStr[i]);
+                }
+                System.out.println();
+                System.out.println("-----------------------------------");
             }
-            System.out.println();
-            System.out.println("-----------------------------------");
-        }
     }
 
     /**
@@ -130,7 +134,7 @@ public class RecipeUI {
                 }
             }
 
-            rfh.searchRecipes(name,ingredients);
+            rfh.searchRecipes(name, ingredients);
 
         } catch (IOException e) {
             throw e;
