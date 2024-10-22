@@ -124,12 +124,16 @@ public class RecipeUI {
             String ingredients = "";
             String[] splitStr = inputStr.split("&");
 
+            if (name.isEmpty() && ingredients.isEmpty()) {
+                System.out.println("No recipes found matching the criteria.");
+                return;
+            }
+
             for (String str : splitStr) {
                 String[] keyValue = str.split("=");
                 if (keyValue[0].contains("name") && keyValue.length == 2) {
                     name = keyValue[1];
-                }
-                if (keyValue[0].contains("ingredient") && keyValue.length == 2) {
+                }else if(keyValue[0].contains("ingredient") && keyValue.length == 2) {
                     ingredients = keyValue[1];
                 }
             }
